@@ -113,28 +113,28 @@ export function TailwindForm() {
   const onFinalSubmit = form.handleSubmit(
     (data) => {
       onSubmit(data);
-      setTimeout(() => {
-        performance.mark('tailwind-submit-end');
-        try {
-          performance.measure(
-            'tailwind-submit',
-            'tailwind-submit-start',
-            'tailwind-submit-end'
-          );
-        } catch (e) {}
-      }, 0);
+      performance.mark('tailwind-submit-end');
+      try {
+        performance.measure(
+          'tailwind-submit',
+          'tailwind-submit-start',
+          'tailwind-submit-end'
+        );
+      } catch (e) {
+        // May fail if marks are cleared or not set
+      }
     },
     () => {
-      setTimeout(() => {
-        performance.mark('tailwind-submit-end');
-        try {
-          performance.measure(
-            'tailwind-submit',
-            'tailwind-submit-start',
-            'tailwind-submit-end'
-          );
-        } catch (e) {}
-      }, 0);
+      performance.mark('tailwind-submit-end');
+      try {
+        performance.measure(
+          'tailwind-submit',
+          'tailwind-submit-start',
+          'tailwind-submit-end'
+        );
+      } catch (e) {
+        // May fail if marks are cleared or not set
+      }
     }
   );
 
