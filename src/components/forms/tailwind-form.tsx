@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useCallback } from 'react';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -90,9 +90,43 @@ export function TailwindForm() {
     })
   }
 
+  const onFinalSubmit = form.handleSubmit(
+    (data) => {
+      onSubmit(data);
+      setTimeout(() => {
+        performance.mark('tailwind-submit-end');
+        try {
+          performance.measure(
+            'tailwind-submit',
+            'tailwind-submit-start',
+            'tailwind-submit-end'
+          );
+        } catch (e) {}
+      }, 0);
+    },
+    () => {
+      setTimeout(() => {
+        performance.mark('tailwind-submit-end');
+        try {
+          performance.measure(
+            'tailwind-submit',
+            'tailwind-submit-start',
+            'tailwind-submit-end'
+          );
+        } catch (e) {}
+      }, 0);
+    }
+  );
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    performance.mark('tailwind-submit-start');
+    onFinalSubmit(e);
+  };
+
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={handleSubmit} className="space-y-8">
         <FormField
           control={form.control}
           name="fullName"

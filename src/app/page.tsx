@@ -12,17 +12,19 @@ export interface PerformanceData {
   tailwind: {
     mount: number;
     update: number;
+    submit: number;
   };
   antd: {
     mount: number;
     update: number;
+    submit: number;
   };
 }
 
 export default function Home() {
   const [perfData, setPerfData] = useState<PerformanceData>({
-    tailwind: { mount: 0, update: 0 },
-    antd: { mount: 0, update: 0 },
+    tailwind: { mount: 0, update: 0, submit: 0 },
+    antd: { mount: 0, update: 0, submit: 0 },
   });
   const [lastInteraction, setLastInteraction] = useState('');
 

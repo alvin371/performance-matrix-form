@@ -20,19 +20,6 @@ const formItemLayout = {
   wrapperCol: { span: 24 },
 };
 
-const handleInteraction = (formName: string, interactionType: string, action: () => void) => {
-  performance.mark(`${formName}-${interactionType}-start`);
-  action();
-  setTimeout(() => {
-    performance.mark(`${formName}-${interactionType}-end`);
-    try {
-        performance.measure(`${formName}-${interactionType}`, `${formName}-${interactionType}-start`, `${formName}-${interactionType}-end`);
-    } catch(e) {
-        // May fail if marks are cleared or not set, safe to ignore
-    }
-  }, 0);
-};
-
 export function AntdForm() {
   const [form] = Form.useForm();
   
@@ -60,6 +47,21 @@ export function AntdForm() {
     form.resetFields();
   };
 
+  const measureSubmit = () => {
+    setTimeout(() => {
+      performance.mark('antd-submit-end');
+      try {
+        performance.measure('antd-submit', 'antd-submit-start', 'antd-submit-end');
+      } catch (e) {
+        // May fail if marks are cleared or not set, safe to ignore
+      }
+    }, 0);
+  };
+
+  const handleSubmit = () => {
+    performance.mark('antd-submit-start');
+  };
+
   return (
     <ConfigProvider
       theme={{
@@ -77,6 +79,8 @@ export function AntdForm() {
         layout="vertical"
         name="antd_form"
         onValuesChange={onValuesChange}
+        onFinish={measureSubmit}
+        onFinishFailed={measureSubmit}
         initialValues={{
             fullName: '',
             email: '',
@@ -146,7 +150,7 @@ export function AntdForm() {
 
         <Form.Item>
           <Space>
-            <Button type="primary" htmlType="submit">
+            <Button type="primary" htmlType="submit" onClick={handleSubmit}>
               Submit
             </Button>
             <Button htmlType="button" onClick={onReset}>

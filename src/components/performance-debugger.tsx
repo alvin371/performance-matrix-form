@@ -74,6 +74,18 @@ export function PerformanceDebugger({ data, lastInteraction }: Props) {
                   <WinnerBadge val1={tailwind.update} val2={antd.update} />
                 </TableCell>
               </TableRow>
+              <TableRow>
+                <TableCell className="font-medium">Submit Validation</TableCell>
+                <TableCell className={`text-right ${lastInteraction.includes('submit') && lastInteraction.includes('tailwind') ? 'text-primary font-bold' : ''}`}>
+                  {tailwind.submit > 0 ? `${tailwind.submit.toFixed(2)} ms` : '...'}
+                </TableCell>
+                <TableCell className={`text-right ${lastInteraction.includes('submit') && lastInteraction.includes('antd') ? 'text-primary font-bold' : ''}`}>
+                  {antd.submit > 0 ? `${antd.submit.toFixed(2)} ms` : '...'}
+                </TableCell>
+                <TableCell className="text-right">
+                  <WinnerBadge val1={tailwind.submit} val2={antd.submit} />
+                </TableCell>
+              </TableRow>
             </TableBody>
           </Table>
         </div>
