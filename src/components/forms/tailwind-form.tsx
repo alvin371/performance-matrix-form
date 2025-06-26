@@ -78,9 +78,9 @@ export function TailwindForm() {
       performance.mark('tailwind-mount-end');
       try {
         performance.measure('tailwind-mount', 'tailwind-mount-start', 'tailwind-mount-end');
-      } catch (e) {}
-      performance.clearMarks('tailwind-mount-start');
-      performance.clearMarks('tailwind-mount-end');
+      } catch (e) {
+        // May fail if marks are cleared or not set, safe to ignore
+      }
     }, 0);
 
     return () => clearTimeout(timer);
