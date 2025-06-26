@@ -2,7 +2,6 @@
 
 import { Gauge } from 'lucide-react';
 import type { PerformanceData } from '@/app/page';
-import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
@@ -11,19 +10,8 @@ interface Props {
   lastInteraction: string;
 }
 
-const WinnerBadge = ({ val1, val2 }: { val1: number; val2: number }) => {
-  if (val1 === 0 || val2 === 0) return <Badge variant="secondary">Pending</Badge>;
-  if (val1 < val2) {
-    return <Badge className="bg-accent text-accent-foreground">Tailwind</Badge>;
-  }
-  if (val2 < val1) {
-    return <Badge className="bg-blue-300 text-blue-900">Ant Design</Badge>;
-  }
-  return <Badge variant="outline">Tie</Badge>;
-};
-
 export function PerformanceDebugger({ data, lastInteraction }: Props) {
-  const { tailwind, antd } = data;
+  const { tailwind, antd, tailwindClone } = data;
 
   return (
     <Card className="sticky top-8">
@@ -46,44 +34,44 @@ export function PerformanceDebugger({ data, lastInteraction }: Props) {
                 <TableHead>Metric</TableHead>
                 <TableHead className="text-right">Tailwind</TableHead>
                 <TableHead className="text-right">Ant Design</TableHead>
-                <TableHead className="text-right">Winner</TableHead>
+                <TableHead className="text-right">RHF+TW (Clone)</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               <TableRow>
                 <TableCell className="font-medium">Initial Render</TableCell>
-                <TableCell className={`text-right ${lastInteraction.includes('mount') ? 'text-primary font-bold' : ''}`}>
+                <TableCell className={`text-right ${lastInteraction === 'tailwind mount' ? 'text-primary font-bold' : ''}`}>
                   {tailwind.mount > 0 ? `${tailwind.mount.toFixed(2)} ms` : '...'}
                 </TableCell>
-                <TableCell className={`text-right ${lastInteraction.includes('mount') ? 'text-primary font-bold' : ''}`}>
+                <TableCell className={`text-right ${lastInteraction === 'antd mount' ? 'text-primary font-bold' : ''}`}>
                   {antd.mount > 0 ? `${antd.mount.toFixed(2)} ms` : '...'}
                 </TableCell>
-                <TableCell className="text-right">
-                  <WinnerBadge val1={tailwind.mount} val2={antd.mount} />
+                <TableCell className={`text-right ${lastInteraction === 'tailwindClone mount' ? 'text-primary font-bold' : ''}`}>
+                  {tailwindClone.mount > 0 ? `${tailwindClone.mount.toFixed(2)} ms` : '...'}
                 </TableCell>
               </TableRow>
               <TableRow>
                 <TableCell className="font-medium">Last Update</TableCell>
-                <TableCell className={`text-right ${lastInteraction.includes('update') && lastInteraction.includes('tailwind') ? 'text-primary font-bold' : ''}`}>
+                <TableCell className={`text-right ${lastInteraction === 'tailwind update' ? 'text-primary font-bold' : ''}`}>
                   {tailwind.update > 0 ? `${tailwind.update.toFixed(2)} ms` : '...'}
                 </TableCell>
-                <TableCell className={`text-right ${lastInteraction.includes('update') && lastInteraction.includes('antd') ? 'text-primary font-bold' : ''}`}>
+                <TableCell className={`text-right ${lastInteraction === 'antd update' ? 'text-primary font-bold' : ''}`}>
                   {antd.update > 0 ? `${antd.update.toFixed(2)} ms` : '...'}
                 </TableCell>
-                <TableCell className="text-right">
-                  <WinnerBadge val1={tailwind.update} val2={antd.update} />
+                 <TableCell className={`text-right ${lastInteraction === 'tailwindClone update' ? 'text-primary font-bold' : ''}`}>
+                  {tailwindClone.update > 0 ? `${tailwindClone.update.toFixed(2)} ms` : '...'}
                 </TableCell>
               </TableRow>
               <TableRow>
                 <TableCell className="font-medium">Submit Validation</TableCell>
-                <TableCell className={`text-right ${lastInteraction.includes('submit') && lastInteraction.includes('tailwind') ? 'text-primary font-bold' : ''}`}>
+                <TableCell className={`text-right ${lastInteraction === 'tailwind submit' ? 'text-primary font-bold' : ''}`}>
                   {tailwind.submit > 0 ? `${tailwind.submit.toFixed(2)} ms` : '...'}
                 </TableCell>
-                <TableCell className={`text-right ${lastInteraction.includes('submit') && lastInteraction.includes('antd') ? 'text-primary font-bold' : ''}`}>
+                <TableCell className={`text-right ${lastInteraction === 'antd submit' ? 'text-primary font-bold' : ''}`}>
                   {antd.submit > 0 ? `${antd.submit.toFixed(2)} ms` : '...'}
                 </TableCell>
-                <TableCell className="text-right">
-                  <WinnerBadge val1={tailwind.submit} val2={antd.submit} />
+                <TableCell className={`text-right ${lastInteraction === 'tailwindClone submit' ? 'text-primary font-bold' : ''}`}>
+                  {tailwindClone.submit > 0 ? `${tailwindClone.submit.toFixed(2)} ms` : '...'}
                 </TableCell>
               </TableRow>
             </TableBody>

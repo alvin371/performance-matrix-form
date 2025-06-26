@@ -1,12 +1,13 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Gauge, ListChecks, Zap } from 'lucide-react';
+import { ListChecks, Zap } from 'lucide-react';
 import { TailwindForm } from '@/components/forms/tailwind-form';
 import { AntdForm } from '@/components/forms/antd-form';
 import { PerformanceDebugger } from '@/components/performance-debugger';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { TailwindFormClone } from '@/components/forms/tailwind-form-clone';
 
 export interface PerformanceData {
   tailwind: {
@@ -19,12 +20,18 @@ export interface PerformanceData {
     update: number;
     submit: number;
   };
+  tailwindClone: {
+    mount: number;
+    update: number;
+    submit: number;
+  };
 }
 
 export default function Home() {
   const [perfData, setPerfData] = useState<PerformanceData>({
     tailwind: { mount: 0, update: 0, submit: 0 },
     antd: { mount: 0, update: 0, submit: 0 },
+    tailwindClone: { mount: 0, update: 0, submit: 0 },
   });
   const [lastInteraction, setLastInteraction] = useState('');
 
@@ -35,7 +42,7 @@ export default function Home() {
         const entry = entries[entries.length - 1]; // Get the last entry to avoid batch updates noise
         const [form, type] = entry.name.split('-');
 
-        if (form === 'tailwind' || form === 'antd') {
+        if (form === 'tailwind' || form === 'antd' || form === 'tailwindClone') {
           setPerfData((prev) => ({
             ...prev,
             [form]: { ...prev[form], [type]: entry.duration },
@@ -72,12 +79,15 @@ export default function Home() {
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
             <div className="lg:col-span-2">
               <Tabs defaultValue="tailwind" className="w-full">
-                <TabsList className="grid w-full grid-cols-2">
+                <TabsList className="grid w-full grid-cols-3">
                   <TabsTrigger value="tailwind">
                     <ListChecks className="mr-2 h-4 w-4" /> React Hook Form + Tailwind
                   </TabsTrigger>
                   <TabsTrigger value="antd">
                     <ListChecks className="mr-2 h-4 w-4" /> Ant Design Form
+                  </TabsTrigger>
+                  <TabsTrigger value="tailwindClone">
+                    <ListChecks className="mr-2 h-4 w-4" /> RHF + Tailwind (Clone)
                   </TabsTrigger>
                 </TabsList>
                 <TabsContent value="tailwind">
@@ -103,6 +113,19 @@ export default function Home() {
                     </CardHeader>
                     <CardContent>
                       <AntdForm />
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+                <TabsContent value="tailwindClone">
+                  <Card className="mt-4">
+                    <CardHeader>
+                      <CardTitle>Tailwind CSS Form (Clone)</CardTitle>
+                      <CardDescription>
+                        A clone for performance comparison.
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <TailwindFormClone />
                     </CardContent>
                   </Card>
                 </TabsContent>
