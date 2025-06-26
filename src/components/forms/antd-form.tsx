@@ -11,6 +11,9 @@ import {
   InputNumber,
   Space,
   ConfigProvider,
+  DatePicker,
+  Slider,
+  Switch,
 } from 'antd';
 
 const { Option } = Select;
@@ -86,6 +89,8 @@ export function AntdForm() {
             email: '',
             age: 18,
             bio: '',
+            satisfaction: 50,
+            newsletter: false,
         }}
       >
         <Form.Item
@@ -127,6 +132,25 @@ export function AntdForm() {
 
         <Form.Item name="bio" label="Bio">
           <Input.TextArea rows={4} placeholder="Tell us a little about yourself" maxLength={200} />
+        </Form.Item>
+
+        <Form.Item
+          name="dateOfBirth"
+          label="Date of Birth"
+          rules={[{ required: true, message: 'Please select your date of birth!' }]}
+        >
+          <DatePicker className="w-full" />
+        </Form.Item>
+
+        <Form.Item
+          name="satisfaction"
+          label="Satisfaction"
+        >
+          <Slider />
+        </Form.Item>
+
+        <Form.Item name="newsletter" label="Subscribe to Newsletter" valuePropName="checked">
+          <Switch />
         </Form.Item>
         
         <Form.Item

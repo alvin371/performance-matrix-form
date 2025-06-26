@@ -4,6 +4,9 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
+import { format } from 'date-fns';
+import { CalendarIcon } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -25,6 +28,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Calendar } from '@/components/ui/calendar';
+import { Slider } from '@/components/ui/slider';
+import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
 
 const formSchema = z.object({
@@ -33,6 +40,11 @@ const formSchema = z.object({
   age: z.coerce.number().min(18, { message: 'You must be at least 18.' }).max(99, { message: 'You must be under 99.' }),
   department: z.string({ required_error: 'Please select a department.' }),
   bio: z.string().max(200).optional(),
+  dateOfBirth: z.date({
+    required_error: 'A date of birth is required.',
+  }),
+  satisfaction: z.coerce.number().min(0).max(100),
+  newsletter: z.boolean().default(false),
   contactMethod: z.enum(['email', 'phone'], {
     required_error: 'You need to select a contact method.',
   }),
@@ -52,6 +64,8 @@ export function TailwindForm() {
       email: '',
       age: 18,
       bio: '',
+      satisfaction: 50,
+      newsletter: false,
       terms: false,
     },
   });
@@ -81,13 +95,13 @@ export function TailwindForm() {
 
   function onSubmit(data: FormValues) {
     toast({
-      title: "Tailwind Form Submitted",
+      title: 'Tailwind Form Submitted',
       description: (
         <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
           <code className="text-white">{JSON.stringify(data, null, 2)}</code>
         </pre>
       ),
-    })
+    });
   }
 
   const onFinalSubmit = form.handleSubmit(
@@ -122,7 +136,6 @@ export function TailwindForm() {
     performance.mark('tailwind-submit-start');
     onFinalSubmit(e);
   };
-
 
   return (
     <Form {...form}>
@@ -196,10 +209,96 @@ export function TailwindForm() {
             <FormItem>
               <FormLabel>Bio</FormLabel>
               <FormControl>
-                <Textarea placeholder="Tell us a little about yourself" className="resize-none" {...field} />
+                <Textarea
+                  placeholder="Tell us a little about yourself"
+                  className="resize-none"
+                  {...field}
+                />
               </FormControl>
               <FormDescription>Max 200 characters.</FormDescription>
               <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="dateOfBirth"
+          render={({ field }) => (
+            <FormItem className="flex flex-col">
+              <FormLabel>Date of birth</FormLabel>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <FormControl>
+                    <Button
+                      variant={'outline'}
+                      className={cn(
+                        'w-[240px] pl-3 text-left font-normal',
+                        !field.value && 'text-muted-foreground'
+                      )}
+                    >
+                      {field.value ? (
+                        format(field.value, 'PPP')
+                      ) : (
+                        <span>Pick a date</span>
+                      )}
+                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                    </Button>
+                  </FormControl>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={field.value}
+                    onSelect={field.onChange}
+                    disabled={(date) =>
+                      date > new Date() || date < new Date('1900-01-01')
+                    }
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
+              <FormDescription>
+                Your date of birth is used to calculate your age.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="satisfaction"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Satisfaction: {field.value ?? 50}</FormLabel>
+              <FormControl>
+                <Slider
+                  defaultValue={[50]}
+                  max={100}
+                  step={1}
+                  onValueChange={(value) => field.onChange(value[0])}
+                  value={[field.value]}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="newsletter"
+          render={({ field }) => (
+            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+              <div className="space-y-0.5">
+                <FormLabel>
+                  Subscribe to newsletter
+                </FormLabel>
+                <FormDescription>
+                  Receive updates about new products and features.
+                </FormDescription>
+              </div>
+              <FormControl>
+                <Switch checked={field.value} onCheckedChange={field.onChange} />
+              </FormControl>
             </FormItem>
           )}
         />
@@ -210,7 +309,11 @@ export function TailwindForm() {
             <FormItem className="space-y-3">
               <FormLabel>Preferred Contact Method</FormLabel>
               <FormControl>
-                <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex flex-col space-y-1">
+                <RadioGroup
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                  className="flex flex-col space-y-1"
+                >
                   <FormItem className="flex items-center space-x-3 space-y-0">
                     <FormControl>
                       <RadioGroupItem value="email" />
@@ -239,7 +342,9 @@ export function TailwindForm() {
               </FormControl>
               <div className="space-y-1 leading-none">
                 <FormLabel>I accept the terms and conditions</FormLabel>
-                <FormDescription>You agree to our Terms of Service and Privacy Policy.</FormDescription>
+                <FormDescription>
+                  You agree to our Terms of Service and Privacy Policy.
+                </FormDescription>
                 <FormMessage />
               </div>
             </FormItem>
@@ -247,7 +352,9 @@ export function TailwindForm() {
         />
         <div className="flex gap-2">
           <Button type="submit">Submit</Button>
-          <Button type="button" variant="outline" onClick={() => form.reset()}>Reset</Button>
+          <Button type="button" variant="outline" onClick={() => form.reset()}>
+            Reset
+          </Button>
         </div>
       </form>
     </Form>
