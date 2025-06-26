@@ -74,10 +74,16 @@ export function TailwindForm() {
 
   useEffect(() => {
     performance.mark('tailwind-mount-start');
-    setTimeout(() => {
+    const timer = setTimeout(() => {
       performance.mark('tailwind-mount-end');
-      performance.measure('tailwind-mount', 'tailwind-mount-start', 'tailwind-mount-end');
+      try {
+        performance.measure('tailwind-mount', 'tailwind-mount-start', 'tailwind-mount-end');
+      } catch (e) {}
+      performance.clearMarks('tailwind-mount-start');
+      performance.clearMarks('tailwind-mount-end');
     }, 0);
+
+    return () => clearTimeout(timer);
   }, []);
 
   const watchedFields = watch();
