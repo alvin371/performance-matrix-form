@@ -51,6 +51,36 @@ const formSchema = z.object({
   terms: z.boolean().default(false).refine((val) => val === true, {
     message: 'You must accept the terms and conditions.',
   }),
+  field1: z.string().optional(),
+  field2: z.string().optional(),
+  field3: z.string().optional(),
+  field4: z.string().optional(),
+  field5: z.string().optional(),
+  field6: z.string().optional(),
+  field7: z.string().optional(),
+  field8: z.string().optional(),
+  field9: z.string().optional(),
+  field10: z.string().optional(),
+  field11: z.string().optional(),
+  field12: z.string().optional(),
+  field13: z.string().optional(),
+  field14: z.string().optional(),
+  field15: z.string().optional(),
+  field16: z.string().optional(),
+  field17: z.string().optional(),
+  field18: z.string().optional(),
+  field19: z.string().optional(),
+  field20: z.string().optional(),
+  field21: z.string().optional(),
+  field22: z.string().optional(),
+  field23: z.string().optional(),
+  field24: z.string().optional(),
+  field25: z.string().optional(),
+  field26: z.string().optional(),
+  field27: z.string().optional(),
+  field28: z.string().optional(),
+  field29: z.string().optional(),
+  field30: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -67,6 +97,36 @@ export function TailwindForm() {
       satisfaction: 50,
       newsletter: false,
       terms: false,
+      field1: '',
+      field2: '',
+      field3: '',
+      field4: '',
+      field5: '',
+      field6: '',
+      field7: '',
+      field8: '',
+      field9: '',
+      field10: '',
+      field11: '',
+      field12: '',
+      field13: '',
+      field14: '',
+      field15: '',
+      field16: '',
+      field17: '',
+      field18: '',
+      field19: '',
+      field20: '',
+      field21: '',
+      field22: '',
+      field23: '',
+      field24: '',
+      field25: '',
+      field26: '',
+      field27: '',
+      field28: '',
+      field29: '',
+      field30: '',
     },
   });
 
@@ -114,27 +174,19 @@ export function TailwindForm() {
     (data) => {
       onSubmit(data);
       performance.mark('tailwind-submit-end');
-      try {
-        performance.measure(
-          'tailwind-submit',
-          'tailwind-submit-start',
-          'tailwind-submit-end'
-        );
-      } catch (e) {
-        // May fail if marks are cleared or not set
-      }
+      performance.measure(
+        'tailwind-submit',
+        'tailwind-submit-start',
+        'tailwind-submit-end'
+      );
     },
     () => {
       performance.mark('tailwind-submit-end');
-      try {
-        performance.measure(
-          'tailwind-submit',
-          'tailwind-submit-start',
-          'tailwind-submit-end'
-        );
-      } catch (e) {
-        // May fail if marks are cleared or not set
-      }
+      performance.measure(
+        'tailwind-submit',
+        'tailwind-submit-start',
+        'tailwind-submit-end'
+      );
     }
   );
 
@@ -338,6 +390,22 @@ export function TailwindForm() {
             </FormItem>
           )}
         />
+        {Array.from({ length: 30 }, (_, i) => i + 1).map((i) => (
+          <FormField
+            key={`field${i}`}
+            control={form.control}
+            name={`field${i}` as keyof FormValues}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Field {i}</FormLabel>
+                <FormControl>
+                  <Input placeholder={`Value for field ${i}`} {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        ))}
         <FormField
           control={form.control}
           name="terms"

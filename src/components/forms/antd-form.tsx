@@ -65,6 +65,21 @@ export function AntdForm() {
     performance.mark('antd-submit-start');
   };
 
+  const initialValues: {[key: string]: any} = {
+    fullName: '',
+    email: '',
+    age: 18,
+    bio: '',
+    satisfaction: 50,
+    newsletter: false,
+    terms: false,
+  };
+
+  for (let i = 1; i <= 30; i++) {
+    initialValues[`field${i}`] = '';
+  }
+
+
   return (
     <ConfigProvider
       theme={{
@@ -84,14 +99,7 @@ export function AntdForm() {
         onValuesChange={onValuesChange}
         onFinish={measureSubmit}
         onFinishFailed={measureSubmit}
-        initialValues={{
-            fullName: '',
-            email: '',
-            age: 18,
-            bio: '',
-            satisfaction: 50,
-            newsletter: false,
-        }}
+        initialValues={initialValues}
       >
         <Form.Item
           name="fullName"
@@ -163,6 +171,16 @@ export function AntdForm() {
             <Radio value="phone">Phone</Radio>
           </Radio.Group>
         </Form.Item>
+
+        {Array.from({ length: 30 }, (_, i) => i + 1).map((i) => (
+          <Form.Item
+            key={`field${i}`}
+            name={`field${i}`}
+            label={`Field ${i}`}
+          >
+            <Input placeholder={`Value for field ${i}`} />
+          </Form.Item>
+        ))}
 
         <Form.Item
           name="terms"
