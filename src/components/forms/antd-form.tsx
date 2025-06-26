@@ -177,6 +177,7 @@ export function AntdForm() {
             key={`field${i}`}
             name={`field${i}`}
             label={`Field ${i}`}
+            rules={[{ required: true, message: 'This field is required.' }]}
           >
             <Input placeholder={`Value for field ${i}`} />
           </Form.Item>
