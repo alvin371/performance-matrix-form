@@ -4,9 +4,20 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { format } from 'date-fns';
-import { CalendarIcon } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import dayjs from 'dayjs';
+import {
+  ConfigProvider,
+  Input,
+  InputNumber,
+  Select,
+  DatePicker,
+  Slider,
+  Switch,
+  Radio,
+  Checkbox,
+  Button as AntdButton,
+  Space,
+} from 'antd';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -17,22 +28,9 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Checkbox } from '@/components/ui/checkbox';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Calendar } from '@/components/ui/calendar';
-import { Slider } from '@/components/ui/slider';
-import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
+
+const { Option } = Select;
 
 const formSchema = z.object({
   fullName: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
@@ -161,7 +159,7 @@ export function TailwindForm() {
 
   function onSubmit(data: FormValues) {
     toast({
-      title: 'Tailwind Form Submitted',
+      title: 'RHF + AntD Form Submitted',
       description: (
         <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
           <code className="text-white">{JSON.stringify(data, null, 2)}</code>
@@ -196,241 +194,215 @@ export function TailwindForm() {
   };
 
   return (
-    <Form {...form}>
-      <form onSubmit={handleSubmit} className="space-y-8">
-        <FormField
-          control={form.control}
-          name="fullName"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Full Name</FormLabel>
-              <FormControl>
-                <Input placeholder="John Doe" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <FormControl>
-                <Input type="email" placeholder="you@example.com" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="age"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Age</FormLabel>
-              <FormControl>
-                <Input type="number" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="department"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Department</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a department" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="engineering">Engineering</SelectItem>
-                  <SelectItem value="design">Design</SelectItem>
-                  <SelectItem value="product">Product</SelectItem>
-                  <SelectItem value="marketing">Marketing</SelectItem>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="bio"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Bio</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="Tell us a little about yourself"
-                  className="resize-none"
-                  {...field}
-                />
-              </FormControl>
-              <FormDescription>Max 200 characters.</FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="dateOfBirth"
-          render={({ field }) => (
-            <FormItem className="flex flex-col">
-              <FormLabel>Date of birth</FormLabel>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <FormControl>
-                    <Button
-                      variant={'outline'}
-                      className={cn(
-                        'w-[240px] pl-3 text-left font-normal',
-                        !field.value && 'text-muted-foreground'
-                      )}
-                    >
-                      {field.value ? (
-                        format(field.value, 'PPP')
-                      ) : (
-                        <span>Pick a date</span>
-                      )}
-                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                    </Button>
-                  </FormControl>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={field.value}
-                    onSelect={field.onChange}
-                    disabled={(date) =>
-                      date > new Date() || date < new Date('1900-01-01')
-                    }
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
-              <FormDescription>
-                Your date of birth is used to calculate your age.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="satisfaction"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Satisfaction: {field.value ?? 50}</FormLabel>
-              <FormControl>
-                <Slider
-                  defaultValue={[50]}
-                  max={100}
-                  step={1}
-                  onValueChange={(value) => field.onChange(value[0])}
-                  value={[field.value]}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="newsletter"
-          render={({ field }) => (
-            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-              <div className="space-y-0.5">
-                <FormLabel>
-                  Subscribe to newsletter
-                </FormLabel>
-                <FormDescription>
-                  Receive updates about new products and features.
-                </FormDescription>
-              </div>
-              <FormControl>
-                <Switch checked={field.value} onCheckedChange={field.onChange} />
-              </FormControl>
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="contactMethod"
-          render={({ field }) => (
-            <FormItem className="space-y-3">
-              <FormLabel>Preferred Contact Method</FormLabel>
-              <FormControl>
-                <RadioGroup
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                  className="flex flex-col space-y-1"
-                >
-                  <FormItem className="flex items-center space-x-3 space-y-0">
-                    <FormControl>
-                      <RadioGroupItem value="email" />
-                    </FormControl>
-                    <FormLabel className="font-normal">Email</FormLabel>
-                  </FormItem>
-                  <FormItem className="flex items-center space-x-3 space-y-0">
-                    <FormControl>
-                      <RadioGroupItem value="phone" />
-                    </FormControl>
-                    <FormLabel className="font-normal">Phone</FormLabel>
-                  </FormItem>
-                </RadioGroup>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        {Array.from({ length: 30 }, (_, i) => i + 1).map((i) => (
+    <ConfigProvider
+      theme={{
+        token: {
+          colorPrimary: '#5DADE2',
+          colorSuccess: '#A3E4D7',
+          colorBgContainer: '#FFFFFF',
+          borderRadius: 6,
+        },
+      }}
+    >
+      <Form {...form}>
+        <form onSubmit={handleSubmit} className="space-y-8">
           <FormField
-            key={`field${i}`}
             control={form.control}
-            name={`field${i}` as keyof FormValues}
+            name="fullName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Field {i}</FormLabel>
+                <FormLabel>Full Name</FormLabel>
                 <FormControl>
-                  <Input placeholder={`Value for field ${i}`} {...field} />
+                  <Input placeholder="John Doe" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-        ))}
-        <FormField
-          control={form.control}
-          name="terms"
-          render={({ field }) => (
-            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-              <FormControl>
-                <Checkbox checked={field.value} onCheckedChange={field.onChange} />
-              </FormControl>
-              <div className="space-y-1 leading-none">
-                <FormLabel>I accept the terms and conditions</FormLabel>
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email</FormLabel>
+                <FormControl>
+                  <Input type="email" placeholder="you@example.com" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="age"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Age</FormLabel>
+                <FormControl>
+                  <InputNumber min={18} max={99} className="w-full" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="department"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Department</FormLabel>
+                <FormControl>
+                  <Select placeholder="Select a department" {...field}>
+                    <Option value="engineering">Engineering</Option>
+                    <Option value="design">Design</Option>
+                    <Option value="product">Product</Option>
+                    <Option value="marketing">Marketing</Option>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="bio"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Bio</FormLabel>
+                <FormControl>
+                  <Input.TextArea
+                    placeholder="Tell us a little about yourself"
+                    rows={4}
+                    {...field}
+                  />
+                </FormControl>
+                <FormDescription>Max 200 characters.</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="dateOfBirth"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Date of birth</FormLabel>
+                <FormControl>
+                  <DatePicker
+                    className="w-full"
+                    value={field.value ? dayjs(field.value) : null}
+                    onChange={(date) => {
+                      field.onChange(date ? date.toDate() : null);
+                    }}
+                  />
+                </FormControl>
                 <FormDescription>
-                  You agree to our Terms of Service and Privacy Policy.
+                  Your date of birth is used to calculate your age.
                 </FormDescription>
                 <FormMessage />
-              </div>
-            </FormItem>
-          )}
-        />
-        <div className="flex gap-2">
-          <Button type="submit">Submit</Button>
-          <Button type="button" variant="outline" onClick={() => form.reset()}>
-            Reset
-          </Button>
-        </div>
-      </form>
-    </Form>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="satisfaction"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Satisfaction: {field.value ?? 50}</FormLabel>
+                <FormControl>
+                  <Slider
+                    min={0}
+                    max={100}
+                    step={1}
+                    onChange={field.onChange}
+                    value={field.value}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="newsletter"
+            render={({ field }) => (
+              <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                <div className="space-y-0.5">
+                  <FormLabel>Subscribe to newsletter</FormLabel>
+                  <FormDescription>
+                    Receive updates about new products and features.
+                  </FormDescription>
+                </div>
+                <FormControl>
+                  <Switch checked={field.value} onChange={field.onChange} />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="contactMethod"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Preferred Contact Method</FormLabel>
+                <FormControl>
+                  <Radio.Group {...field}>
+                    <Radio value="email">Email</Radio>
+                    <Radio value="phone">Phone</Radio>
+                  </Radio.Group>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          {Array.from({ length: 30 }, (_, i) => i + 1).map((i) => (
+            <FormField
+              key={`field${i}`}
+              control={form.control}
+              name={`field${i}` as keyof FormValues}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Field {i}</FormLabel>
+                  <FormControl>
+                    <Input placeholder={`Value for field ${i}`} {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          ))}
+          <FormField
+            control={form.control}
+            name="terms"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <Checkbox
+                    checked={field.value}
+                    onChange={(e) => field.onChange(e.target.checked)}
+                  >
+                    I accept the terms and conditions
+                  </Checkbox>
+                </FormControl>
+                <FormDescription>
+                    You agree to our Terms of Service and Privacy Policy.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <div className="flex gap-2">
+            <Space>
+              <AntdButton type="primary" htmlType="submit">
+                Submit
+              </AntdButton>
+              <AntdButton htmlType="button" onClick={() => form.reset()}>
+                Reset
+              </AntdButton>
+            </Space>
+          </div>
+        </form>
+      </Form>
+    </ConfigProvider>
   );
 }

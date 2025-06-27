@@ -81,7 +81,7 @@ export default function Home() {
               <Tabs defaultValue="tailwind" className="w-full">
                 <TabsList className="grid w-full grid-cols-3">
                   <TabsTrigger value="tailwind">
-                    <ListChecks className="mr-2 h-4 w-4" /> React Hook Form + Tailwind
+                    <ListChecks className="mr-2 h-4 w-4" /> RHF + Ant Design
                   </TabsTrigger>
                   <TabsTrigger value="antd">
                     <ListChecks className="mr-2 h-4 w-4" /> Ant Design Form
@@ -93,9 +93,9 @@ export default function Home() {
                 <TabsContent value="tailwind">
                   <Card className="mt-4">
                     <CardHeader>
-                      <CardTitle>Tailwind CSS Form</CardTitle>
+                      <CardTitle>React Hook Form + Ant Design</CardTitle>
                       <CardDescription>
-                        Built with React Hook Form, Zod, and styled with ShadCN/UI components.
+                        Built with React Hook Form, Zod, and styled with Ant Design components.
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
